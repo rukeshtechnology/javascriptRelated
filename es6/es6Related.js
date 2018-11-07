@@ -6,6 +6,7 @@
 10) Template Strings
 11) Rest and Spread operators
 12) Classes
+13) Generators
 */
 
 
@@ -327,3 +328,126 @@ constructor(options){
 const toyota = new Toyota({ color: 'red', title: 'Daily Driver'});
 toyota;
 console.log(toyota);
+
+/* 
+13) Generators
+================================================================================================================
+*/
+//Example for of loop
+const colors = ['red', 'green', 'blue'];
+for (let color of colors){
+  console.log(color);
+}
+
+const numbers = [1,2,3,4];
+let total = 0;
+for (let number of numbers){
+  total += number;
+}
+
+/* 
+  Generator are function that can be entered and exited multiple TimeRanges. 
+*/
+//Example
+function* numbers(){
+  yield;
+}
+
+const gen = numbers();
+gen.next();
+gen.next();
+/* out put 
+{"done":false}
+{"done":true} */
+
+//Example
+function* shopping(){
+  //stuff on the sidewalk  
+  
+  // walking down the side walk
+  
+  //Go to the store with cash
+  const stuffFromStore = yield 'cash';
+  
+  const cleanClothes = yield 'laundry';
+  
+  //walking back home  
+  return stuffFromStore;
+}
+
+//stuff in the store
+const gen = shopping();  //Note no code inside function is called. You have to call next().
+gen.next();		//leaving out house
+gen.next('rukesh');
+gen.next();
+
+/* output
+{"value":"cash","done":false}
+{"value":"laundry","done":false}
+{"value":"rukesh","done":true} */
+
+//Example
+function* colors(){
+  yield 'red',
+  yield 'blue',
+  yield 'green'
+}
+
+const gen = colors();
+gen.next();
+gen.next();
+gen.next();
+
+const myColors = [];
+for(let color of colors()){
+  myColors.push(color);
+}
+myColors;
+
+/* output
+{"value":"red","done":false}
+{"value":"blue","done":false}
+{"value":"green","done":false}
+{"value":"green","done":false}
+3
+["red","blue","green"] */
+
+//Example
+//I want to iterate over only persons
+const testingTeam = {
+  lead: 'Amanda',
+  tester: 'Bill'
+};
+
+const engineeringTeam = {
+  size: 3,
+  department: 'Engineering',
+  lead: 'Rukesh',
+  manager: 'Tamrakar',
+  engineer: 'Dave',
+  testingTeam: testingTeam
+};
+
+function* teamIterator(team){
+  yield team.lead;
+  yield team.manager;
+ 	yield team.engineer;
+  const testingTeamGenerator = testingTeamIterator(team.testingTeam);
+  yield* testingTeamGenerator;
+}
+
+function* testingTeamIterator(team){
+  yield team.lead;
+  yield team.tester;
+}
+
+const names = [];
+for(let name of teamIterator(engineeringTeam)){
+  names.push(name);
+}
+
+names;
+
+/* output
+5
+["Rukesh","Tamrakar","Dave","Amanda","Bill"] */
